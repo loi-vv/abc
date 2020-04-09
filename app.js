@@ -5,6 +5,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var carsRouter  = require('./routes/car');
 var hbs = require('hbs');
 require('dotenv').config();
 
@@ -19,12 +20,24 @@ hbs.registerPartials(__dirname + '/views/partials');
 
 app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/users', carsRouter);
+//Nhập mô-đun mongoose
+var mongoose = require('mongoose');
+
+var mongoDB = 'mongodb://localhost/demo';
+mongoose.connect(mongoDB,{ useNewUrlParser: true ,useUnifiedTopology: true});
+var db = mongoose.connection;
+//Ràng buộc kết nối với sự kiện lỗi (để lấy ra thông báo khi có lỗi)
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+db.once('open',function(){
+
+})
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
