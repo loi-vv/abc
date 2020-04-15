@@ -2,7 +2,6 @@ var express = require('express');
 var router = express.Router();
 
 var carModel = require('../models/car');
-var userModel = require('../models/user');
 
 // router.get('/',(req,res)=>{
 //     carModel.find({}).exec().then(function(data){

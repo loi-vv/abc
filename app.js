@@ -6,11 +6,13 @@ var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var carsRouter  = require('./routes/car');
+var session = require('express-session')
 var hbs = require('hbs');
 require('dotenv').config();
 
 var app = express();
 
+var userModel = require('./models/user');
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'html');
@@ -26,7 +28,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-app.use('/users', carsRouter);
+app.use('/cars', carsRouter);
 //Nhập mô-đun mongoose
 var mongoose = require('mongoose');
 
@@ -36,8 +38,55 @@ var db = mongoose.connection;
 //Ràng buộc kết nối với sự kiện lỗi (để lấy ra thông báo khi có lỗi)
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 db.once('open',function(){
+})
+
+app.get('/setcookie', function(req, res){
+  // setting cookies
+  res.cookie('username', 'loi', { maxAge: 900000, httpOnly: true });
+  return res.send('Cookie has been set');
+});
+
+app.use(session({
+  secret: 'keyboard cat',
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: false }
+}))
+
+app.get('/home',(req,res,next)=>{
+  if(req.session.isLogin){
+    res.json("home")
+  }else{
+    res.json('ban chua dang nhap')
+  }
+},(req,res,next)=>{
 
 })
+
+app.get('/login',(req,res)=>{
+  res.render('login');
+})
+app.get('/home',(req,res)=>{
+  res.render('home');
+})
+app.post('/login',(req,res,next)=>{
+  const username = req.body.username;
+  const password = req.body.password;
+
+  userModel.findOne({username:username,password:password}).then((data)=>{
+    if(data){
+      req.session.isLogin = true;
+      res.json({
+        code: 200,
+        message: "dang nhap thanh cong"
+      })
+    }else{
+      req.session.isLogin = false;
+      res.status(500).json('Sai tai khoan')
+    }
+  })
+})
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

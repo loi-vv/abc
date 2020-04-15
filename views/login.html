@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+</head>
+
+<body>
+    <div>
+        Username: <input type="text" id="user"><br>
+        Password: <input type="password" id="pass"><br><br>
+        <input type="button" onclick="login()" value="Login">
+    </div>
+
+
+    <script>
+        function login() {
+            $.ajax({
+                url: '/login',
+                type: 'POST',
+                data: {
+                    username: $('#user').val(),
+                    password: $('#pass').val(),
+                }
+            })
+                .then(data => {
+                    console.log("Dang nhap thanh cong");
+                })
+                .catch(err => {
+                    console.log("Dang nhap that bai");
+                })
+        }
+    </script>
+</body>
+
+</html>
