@@ -8,6 +8,7 @@ var usersRouter = require('./routes/users');
 var carsRouter  = require('./routes/car');
 var session = require('express-session')
 var hbs = require('hbs');
+var jwt = require('jsonwebtoken');
 require('dotenv').config();
 
 var app = express();
@@ -53,6 +54,11 @@ app.use(session({
   cookie: { secure: false }
 }))
 
+app.get('/user',(req,res)=>{
+  var token = jwt.verify(req.headers.token,"loi");
+  console.log(token);
+})
+
 app.get('/home',(req,res,next)=>{
   if(req.session.isLogin){
     res.json("home")
@@ -66,20 +72,21 @@ app.get('/home',(req,res,next)=>{
 app.get('/login',(req,res)=>{
   res.render('login');
 })
-app.get('/home',(req,res)=>{
-  res.render('home');
-})
+
 app.post('/login',(req,res,next)=>{
   const username = req.body.username;
   const password = req.body.password;
 
-  userModel.findOne({username:username,password:password}).then((data)=>{
+  userModel.findOne({username:username,password:password}).lean().exec().then((data)=>{
+    delete data.password
     if(data){
-      req.session.isLogin = true;
+      var token = jwt.sign(data,"loi",{expiresIn: 60*60})
       res.json({
         code: 200,
-        message: "dang nhap thanh cong"
+        message: "dang nhap thanh cong",
+        token : token
       })
+      console.log(token);
     }else{
       req.session.isLogin = false;
       res.status(500).json('Sai tai khoan')
