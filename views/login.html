@@ -6,34 +6,56 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel='stylesheet' href='/stylesheets/style.css' />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <title>{{title}}</title>
 </head>
 
 <body>
-    <div>
-        Username: <input type="text" id="user"><br>
-        Password: <input type="password" id="pass"><br><br>
-        <input type="button" onclick="login()" value="Login">
-    </div>
+    <h1>{{title}}</h1>
+    <form action="/auth/login" method="POST">
+        <div>
+            Username: <input type="text" name="username" id="username"><br>
+            Password: <input type="password" name="password" id="password"><br><br>
+            <input type="submit" value="Login">
+        </div>
 
+    </form>
 
     <script>
-        function login() {
-            $.ajax({
-                url: '/login',
-                type: 'POST',
-                data: {
-                    username: $('#user').val(),
-                    password: $('#pass').val(),
-                }
-            })
-                .then(data => {
-                    console.log("Dang nhap thanh cong");
-                })
-                .catch(err => {
-                    console.log("Dang nhap that bai");
-                })
-        }
-    </script>
+
+    //     function login() {
+    //         $.ajax({
+    //             url: '/login',
+    //             type: 'POST',
+    //             data: {
+    //                 username: $('#username').val(),
+    //                 password: $('#password').val(),
+    //             }
+    //         })
+    //             .then((data) => {
+
+    //             })
+    //     }
+
+    //     function home() {
+    //         $.ajax({
+    //             url: '/home',
+    //             type: 'GET',
+    //         })
+    //             .then((data) => {
+    //                 console.log(data);
+    //             })
+    //     }
+
+    //     function logOut() {
+    //         $.ajax({
+    //             url: '/logout',
+    //             type: 'GET',
+    //         })
+    //             .then((data) => {
+    //                 // document.location.href = 'login';
+    //             })
+    //     }
+    // </script>
 </body>
 
 </html>
